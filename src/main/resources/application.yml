@@ -1,0 +1,28 @@
+server:
+  port: 18081
+
+docsdownload:
+  base-url: ${DOCSDOWNLOAD_BASE_URL:http://168.63.17.162:8000}
+
+downstream:
+  base-url: ${DOWNSTREAM_BASE_URL:http://168.63.17.162:8000}
+
+llm:
+  api-key: ${LLM_API_KEY:001009@9db6293852884c9ea5c8d745b36f657a}
+  base-url: ${LLM_BASE_URL:http://168.63.65.40:8090/llm-service/v1}
+  model: ${LLM_MODEL:saas-doubao-seed-20-pro}
+
+polling:
+  interval-seconds: 5
+  timeout-minutes: 10
+
+spring:
+  datasource:
+    url: ${MYSQL_URL:jdbc:mysql://168.63.17.162:3306/smarttest?useUnicode=true&characterEncoding=utf8&useSSL=false&serverTimezone=Asia/Shanghai}
+    username: ${MYSQL_USERNAME:root}
+    password: ${MYSQL_PASSWORD:smarttest123}
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    hikari:
+      connection-timeout: 5000
+      initialization-fail-timeout: -1
+      maximum-pool-size: 5
