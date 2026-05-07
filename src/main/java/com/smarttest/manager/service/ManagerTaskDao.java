@@ -20,11 +20,11 @@ public class ManagerTaskDao {
     private final JdbcTemplate jdbcTemplate;
 
     @Transactional
-    public void insertManagerTask(String managerTaskId, String storyid, String phase, String doctype,
+    public void insertManagerTask(String managerTaskId, String storyid, String taskType, String phase, String doctype,
                                   String envDto, String callbackUrl) {
-        String sql = "INSERT INTO manager_tasks (manager_task_id, storyid, phase, doctype, env_dto, callback_url, status) " +
-                "VALUES (?, ?, ?, ?, ?, ?, 'pending')";
-        jdbcTemplate.update(sql, managerTaskId, storyid, phase, doctype, envDto, callbackUrl);
+        String sql = "INSERT INTO manager_tasks (manager_task_id, storyid, task_type, phase, doctype, env_dto, callback_url, status) " +
+                "VALUES (?, ?, ?, ?, ?, ?, ?, 'pending')";
+        jdbcTemplate.update(sql, managerTaskId, storyid, taskType, phase, doctype, envDto, callbackUrl);
     }
 
     public void updateManagerTaskStatus(String managerTaskId, String status) {
@@ -33,10 +33,14 @@ public class ManagerTaskDao {
     }
 
     @Transactional
+    public void insertTaskDetail(String managerTaskId, String downstreamTaskId, String testPointId, String caseName) {
+        String sql = "INSERT INTO manager_task_details (manager_task_id, downstream_task_id, test_point_id, case_name, status) " +
+                "VALUES (?, ?, ?, ?, 'pending')";
+        jdbcTemplate.update(sql, managerTaskId, downstreamTaskId, testPointId, caseName);
+    }
+
     public void insertTaskDetail(String managerTaskId, String downstreamTaskId, String testPointId) {
-        String sql = "INSERT INTO manager_task_details (manager_task_id, downstream_task_id, test_point_id, status) " +
-                "VALUES (?, ?, ?, 'pending')";
-        jdbcTemplate.update(sql, managerTaskId, downstreamTaskId, testPointId);
+        insertTaskDetail(managerTaskId, downstreamTaskId, testPointId, testPointId);
     }
 
     public void updateTaskDetailStatus(String managerTaskId, String downstreamTaskId, String status) {
@@ -75,7 +79,12 @@ public class ManagerTaskDao {
     }
 
     public List<String> queryRunningManagerTaskIds() {
-        String sql = "SELECT manager_task_id FROM manager_tasks WHERE status = 'running'";
+        String sql = "SELECT manager_task_id FROM manager_tasks WHERE status = 'running' AND task_type = 'api'";
+        return jdbcTemplate.queryForList(sql, String.class);
+    }
+
+    public List<String> queryRunningUiManagerTaskIds() {
+        String sql = "SELECT manager_task_id FROM manager_tasks WHERE status = 'running' AND task_type = 'ui'";
         return jdbcTemplate.queryForList(sql, String.class);
     }
 }

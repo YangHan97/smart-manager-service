@@ -1,5 +1,6 @@
 package com.smarttest.manager.dto;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -33,14 +34,18 @@ public class TaskCreateRequest {
     @Builder
     @NoArgsConstructor
     @AllArgsConstructor
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     public static class Options {
 
         private String mode;
 
+        @JsonProperty("max_test_cases")
         private Integer maxTestCases;
 
+        @JsonProperty("max_retry")
         private Integer maxRetry;
 
+        @JsonProperty("independent_ratio")
         private Double independentRatio;
 
         private List<String> tags;

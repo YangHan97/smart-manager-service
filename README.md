@@ -151,7 +151,8 @@ Content-Type: application/json
 
 | 场景 | `phase` | `tasks` |
 |------|---------|---------|
-| 所有下游任务正常完成 | `completed` | 非空数组，含各任务结果 |
+| 所有下游任务正常完成 + 报告成功 | `completed` | 非空数组，含各任务结果 |
+| 所有下游任务正常完成 + 报告失败 | `completed_with_report_error` | 非空数组，含各任务结果 |
 | 文档下载失败 | `failed` | `[]` |
 | Markdown 解析失败 | `failed` | `[]` |
 | 下游任务创建全部失败 | `failed` | `[]` |
@@ -190,6 +191,23 @@ Content-Type: application/json
 }
 ```
 
+### 回调示例 — 报告失败
+
+```json
+{
+  "manager_task_id": "mtk_a1b2c3d4",
+  "phase": "completed_with_report_error",
+  "tasks": [
+    {
+      "task_id": "tsk_xxx1",
+      "test_case_id": "TP001",
+      "status": "completed",
+      "result_summary": { }
+    }
+  ]
+}
+```
+
 ---
 
 ## 4. 核心处理流程
@@ -222,8 +240,8 @@ POST /api/v1/manager/tasks/create
   |
   v
 7. 全部到达终态后：
-   - 发送回调（phase=completed，tasks 含结果）
    - 生成测试报告并上传
+   - 发送回调（phase=completed 或 completed_with_report_error，tasks 含结果）
    - 更新 status=completed
 ```
 

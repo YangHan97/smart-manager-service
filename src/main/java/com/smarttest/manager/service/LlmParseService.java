@@ -100,8 +100,9 @@ public class LlmParseService {
 
     private String extractProtocol(String tag) {
         if (tag == null) return "";
-        if (tag.contains("DUBBO")) return "DUBBO";
-        if (tag.contains("HTTP")) return "HTTP";
+        String upper = tag.toUpperCase();
+        if (upper.contains("DUBBO")) return "DUBBO";
+        if (upper.contains("HTTP")) return "HTTP";
         return "";
     }
 

@@ -44,4 +44,28 @@ public class WebClientConfig {
                 .defaultHeader("Authorization", "Bearer " + llmConfig.getApiKey())
                 .build();
     }
+
+    @Bean("uiDownstreamWebClient")
+    public WebClient uiDownstreamWebClient(
+            @org.springframework.beans.factory.annotation.Value("${ui-downstream.base-url}") String uiDownstreamBaseUrl) {
+        HttpClient httpClient = HttpClient.create()
+                .responseTimeout(Duration.ofSeconds(30));
+
+        return WebClient.builder()
+                .clientConnector(new ReactorClientHttpConnector(httpClient))
+                .baseUrl(uiDownstreamBaseUrl)
+                .build();
+    }
+
+    @Bean("execPlatformWebClient")
+    public WebClient execPlatformWebClient(
+            @org.springframework.beans.factory.annotation.Value("${exec-platform.base-url}") String execPlatformBaseUrl) {
+        HttpClient httpClient = HttpClient.create()
+                .responseTimeout(Duration.ofSeconds(30));
+
+        return WebClient.builder()
+                .clientConnector(new ReactorClientHttpConnector(httpClient))
+                .baseUrl(execPlatformBaseUrl)
+                .build();
+    }
 }
