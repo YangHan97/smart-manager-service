@@ -26,6 +26,12 @@ public class DocDownloadService {
     private String mockMdFile;
 
     public String downloadDoc(String storyId, String phase, String docType) {
+        // 本地文件路径模式：storyId 以 / 或 ./ 开头时，直接读取本地文件
+        if (storyId != null && (storyId.startsWith("/") || storyId.startsWith("./"))) {
+            log.info("Loading doc from local path: {}", storyId);
+            return loadFromLocalPath(storyId);
+        }
+
         String mdFromFile = loadMockMdFromFile();
         if (mdFromFile != null && !mdFromFile.isEmpty()) {
             log.info("Using mocked MD file for storyId={}, phase={}, docType={}", storyId, phase, docType);
@@ -64,6 +70,20 @@ public class DocDownloadService {
             return FileCopyUtils.copyToString(new InputStreamReader(resource.getInputStream(), StandardCharsets.UTF_8));
         } catch (Exception e) {
             log.error("Failed to load mock MD file: {}", mockMdFile, e);
+            return null;
+        }
+    }
+
+    private String loadFromLocalPath(String path) {
+        try {
+            Resource resource = new FileSystemResource(path);
+            if (!resource.exists()) {
+                log.warn("Local doc file not found: {}", path);
+                return null;
+            }
+            return FileCopyUtils.copyToString(new InputStreamReader(resource.getInputStream(), StandardCharsets.UTF_8));
+        } catch (Exception e) {
+            log.error("Failed to load doc from local path: {}", path, e);
             return null;
         }
     }
